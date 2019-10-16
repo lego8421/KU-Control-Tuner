@@ -75,12 +75,16 @@ void MainWindow::onPushbuttonCreateClicked() {
 
 void MainWindow::on_pushButtonStart_clicked() {
     pushButtonTabCreate->setEnabled(false);
+    ui->pushButtonStart->setEnabled(false);
+    ui->pushButtonStop->setEnabled(true);
     stopSignal = false;
     QTimer::singleShot(1, this, &MainWindow::onTimer);
 }
 
 void MainWindow::on_pushButtonStop_clicked() {
     pushButtonTabCreate->setEnabled(true);
+    ui->pushButtonStart->setEnabled(true);
+    ui->pushButtonStop->setEnabled(false);
     stopSignal = true;
 }
 

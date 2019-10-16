@@ -3,5 +3,7 @@
         <file>icon/new.svg</file>
         <file>icon/open.svg</file>
         <file>icon/save.svg</file>
+        <file>icon/play.svg</file>
+        <file>icon/stop.svg</file>
     </qresource>
 </RCC>
