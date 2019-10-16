@@ -27,7 +27,7 @@ public:
 public slots:
     void start();
     void stop();
-    void update(RobotData data);
+    void update(qreal time, RobotData data);
 
 private slots:
     void on_pushButtonAdd_clicked();
@@ -42,7 +42,6 @@ private:
     Ui::ChartViewForm *ui;
     ChartSelectDialog *dialog;
 
-    double initTime;
     QPointF dataRange;
     QStringList dataNames;
 };

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QTime>
 #include <QTimer>
 #include <QThread>
 #include <QLabel>
@@ -14,7 +15,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), stopSignal(true) {
+    : QMainWindow(parent), ui(new Ui::MainWindow), initTime(0.0), stopSignal(true) {
     ui->setupUi(this);
 
     projectSaveDirectory = QDir(QDir::homePath() + "/Documents/KU Control Tuner Project");
@@ -36,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);
     onPushbuttonCreateClicked();
 
-    ui->progressBar->setVisible(false);
     connect(this, &MainWindow::inProgressSignal, this, &MainWindow::inProgress);
     connect(this, &MainWindow::progressFinighSignal, this, &MainWindow::progressFinish);
 
@@ -82,8 +82,12 @@ void MainWindow::on_pushButtonStart_clicked() {
     ui->pushButtonStart->setEnabled(false);
     ui->pushButtonStop->setEnabled(true);
     ui->pushButtonExport->setEnabled(false);
-    ui->progressBar->setVisible(false);
     stopSignal = false;
+
+    QTime time = QTime::currentTime();
+    qreal seconds = 60 * 60 * time.hour() + 60 * time.minute() + time.second();
+    initTime = 1000 * seconds + time.msec();
+
     QTimer::singleShot(1, this, &MainWindow::onTimer);
 }
 
@@ -108,7 +112,6 @@ void MainWindow::on_pushButtonExport_clicked() {
             ui->pushButtonStart->setEnabled(false);
             ui->pushButtonStop->setEnabled(false);
             ui->pushButtonExport->setEnabled(false);
-            ui->progressBar->setVisible(true);
             emit inProgressSignal(0);
 
             QStringList exportDatas;
@@ -167,10 +170,21 @@ void MainWindow::on_pushButtonExport_clicked() {
 
 void MainWindow::onTimer() {
     RobotData data = driverInterface.getRobotData();
-    emit chartUpdate(data);
 
-    if (!stopSignal) {
-        QTimer::singleShot(1, this, &MainWindow::onTimer);
+    QTime time = QTime::currentTime();
+    qreal seconds = 60 * 60 * time.hour() + 60 * time.minute() + time.second();
+    qreal timeValue = (1000.0 * seconds + time.msec() - initTime) / 1000.0;
+
+    // 10 min
+    if (timeValue > 10 * 60) {
+        on_pushButtonStop_clicked();
+        QMessageBox::warning(this, "Data Graph", "timeout");
+    } else {
+        emit chartUpdate(timeValue, data);
+
+        if (!stopSignal) {
+            QTimer::singleShot(1, this, &MainWindow::onTimer);
+        }
     }
 }
 

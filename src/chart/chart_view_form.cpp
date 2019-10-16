@@ -6,7 +6,7 @@
 
 ChartViewForm::ChartViewForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ChartViewForm), initTime(0.0) {
+    ui(new Ui::ChartViewForm) {
     ui->setupUi(this);
 
     dialog = new ChartSelectDialog(this);
@@ -28,10 +28,6 @@ ChartViewForm::~ChartViewForm() {
 void ChartViewForm::start() {
     ui->pushButtonAdd->setEnabled(false);
     ui->pushButtonDelete->setEnabled(false);
-
-    QTime time = QTime::currentTime();
-    qreal seconds = 60 * 60 * time.hour() + 60 * time.minute() + time.second();
-    initTime = 1000 * seconds + time.msec();
 
     QCustomPlot *plot = ui->widgetChart;
     int count = dataNames.count();
@@ -81,17 +77,13 @@ void ChartViewForm::stop() {
     ui->pushButtonDelete->setEnabled(true);
 }
 
-void ChartViewForm::update(RobotData data) {
+void ChartViewForm::update(qreal time, RobotData data) {
     QCustomPlot *plot = ui->widgetChart;
     int count = dataNames.count();
 
     if (!count) {
         return;
     }
-
-    QTime time = QTime::currentTime();
-    qreal seconds = 60 * 60 * time.hour() + 60 * time.minute() + time.second();
-    qreal timeValue = (1000.0 * seconds + time.msec() - initTime) / 1000.0;
 
     for (int i = 0; i < count; i++) {
         QString name = dataNames[i];
@@ -157,11 +149,11 @@ void ChartViewForm::update(RobotData data) {
         dataRange.setX(std::max(dataRange.x(), value));
         dataRange.setY(std::min(dataRange.y(), value));
 
-        plot->graph(i)->addData(timeValue, value);
+        plot->graph(i)->addData(time, value);
     }
 
     qreal offset = 0.1;
-    qreal xMax = timeValue;
+    qreal xMax = time;
     qreal xMin = xMax - (100 * timeRange / 1000.0);
     qreal yMax = dataRange.x() * ((dataRange.x() >= 0) ? 1 + offset : 1 - offset);
     qreal yMin = dataRange.y() * ((dataRange.y() >= 0) ? 1 + offset : 1 - offset);

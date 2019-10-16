@@ -23,7 +23,7 @@ public:
     ~MainWindow();
 
 signals:
-    void chartUpdate(RobotData data);
+    void chartUpdate(qreal time, RobotData data);
     void inProgressSignal(qint64 value);
     void progressFinighSignal();
 
@@ -59,6 +59,7 @@ private:
     QDir projectSaveDirectory;
     QString projectPath;
 
+    double initTime;
     bool stopSignal;
     TcpDriverInterface driverInterface;
 };
