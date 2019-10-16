@@ -12,8 +12,8 @@ ChartViewForm::ChartViewForm(QWidget *parent) :
     dialog = new ChartSelectDialog(this);
 
     connect(dialog, &ChartSelectDialog::itemDoubleClicked, [ = ](QString name) {
-        if (datas.indexOf(name) == -1 && datas.size() < 7) {
-            datas << name;
+        if (dataNames.indexOf(name) == -1 && dataNames.size() < 7) {
+            dataNames << name;
             ui->listWidget->addItem(name);
         }
     });
@@ -28,8 +28,6 @@ ChartViewForm::~ChartViewForm() {
 void ChartViewForm::start() {
     ui->pushButtonAdd->setEnabled(false);
     ui->pushButtonDelete->setEnabled(false);
-
-    QStringList dataNames = getDatas();
 
     QTime time = QTime::currentTime();
     qreal seconds = 60 * 60 * time.hour() + 60 * time.minute() + time.second();
@@ -85,7 +83,6 @@ void ChartViewForm::stop() {
 
 void ChartViewForm::update(RobotData data) {
     QCustomPlot *plot = ui->widgetChart;
-    QStringList dataNames = getDatas();
     int count = dataNames.count();
 
     if (!count) {
@@ -184,7 +181,7 @@ void ChartViewForm::on_pushButtonDelete_clicked() {
     int row = ui->listWidget->currentRow();
     if (row != -1) {
         QString name = ui->listWidget->item(row)->text();
-        datas.removeOne(name);
+        dataNames.removeOne(name);
         ui->listWidget->takeItem(row);
         if (row == ui->listWidget->count()) {
             ui->listWidget->setCurrentRow(row - 1);
@@ -199,9 +196,36 @@ void ChartViewForm::init(QStringList names) {
     for (auto name : names) {
         ui->listWidget->addItem(name);
     }
-    datas = names;
+    dataNames = names;
 }
 
-QStringList ChartViewForm::getDatas() {
-    return datas;
+QStringList ChartViewForm::getDataNames() {
+    return dataNames;
+}
+
+QStringList ChartViewForm::exportDatas() {
+    QStringList ret;
+    QCustomPlot *plot = ui->widgetChart;
+    int graphCount = plot->graphCount();
+
+    if (graphCount) {
+        int dataCount = plot->graph()->data()->size();
+
+        QString header;
+        for (int i = 0; i < graphCount; i++) {
+            header += "time," + plot->graph(i)->name() + ",";
+        }
+        ret << header;
+
+        for (int i = 0; i < dataCount; i++) {
+            QString data;
+            for (int index = 0; index < graphCount; index++) {
+                data += QString::number(plot->graph(index)->data()->at(i)->key, 'f', 3) + ",";
+                data += QString::number(plot->graph(index)->data()->at(i)->value, 'f', 3) + ",";
+            }
+            ret << data;
+        }
+    }
+
+    return ret;
 }

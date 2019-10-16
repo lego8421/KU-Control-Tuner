@@ -35,7 +35,8 @@ private slots:
 
 public:
     void init(QStringList names = {});
-    QStringList getDatas();
+    QStringList getDataNames();
+    QStringList exportDatas();
 
 private:
     Ui::ChartViewForm *ui;
@@ -43,7 +44,7 @@ private:
 
     double initTime;
     QPointF dataRange;
-    QStringList datas;
+    QStringList dataNames;
 };
 
 #endif // CHART_VIEW_FORM_H

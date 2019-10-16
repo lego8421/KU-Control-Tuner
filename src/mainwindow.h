@@ -24,19 +24,23 @@ public:
 
 signals:
     void chartUpdate(RobotData data);
+    void inProgressSignal(qint64 value);
+    void progressFinighSignal();
 
 private slots:
     void on_tabWidget_tabCloseRequested(int index);
     void onPushbuttonCreateClicked();
     void on_pushButtonStart_clicked();
     void on_pushButtonStop_clicked();
+    void on_pushButtonExport_clicked();
     void onTimer();
 
     void on_actionNew_triggered();
-
     void on_actionOpen_triggered();
-
     void on_actionSave_triggered();
+
+    void inProgress(qint64 value);
+    void progressFinish();
 
 private:
     void createProject();

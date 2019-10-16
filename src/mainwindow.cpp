@@ -36,6 +36,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);
     onPushbuttonCreateClicked();
 
+    ui->progressBar->setVisible(false);
+    connect(this, &MainWindow::inProgressSignal, this, &MainWindow::inProgress);
+    connect(this, &MainWindow::progressFinighSignal, this, &MainWindow::progressFinish);
+
     driverInterface.init();
 }
 
@@ -77,6 +81,8 @@ void MainWindow::on_pushButtonStart_clicked() {
     pushButtonTabCreate->setEnabled(false);
     ui->pushButtonStart->setEnabled(false);
     ui->pushButtonStop->setEnabled(true);
+    ui->pushButtonExport->setEnabled(false);
+    ui->progressBar->setVisible(false);
     stopSignal = false;
     QTimer::singleShot(1, this, &MainWindow::onTimer);
 }
@@ -85,7 +91,78 @@ void MainWindow::on_pushButtonStop_clicked() {
     pushButtonTabCreate->setEnabled(true);
     ui->pushButtonStart->setEnabled(true);
     ui->pushButtonStop->setEnabled(false);
+    ui->pushButtonExport->setEnabled(true);
     stopSignal = true;
+}
+
+void MainWindow::on_pushButtonExport_clicked() {
+    QString filePath =  QFileDialog::getSaveFileName(this, "Export Data", projectSaveDirectory.path(), "CSV files (*.csv)");
+
+    if (!filePath.isEmpty()) {
+        QThread thread;
+        QEventLoop loop;
+        QObject context;
+        context.moveToThread(&thread);
+        connect(&thread, &QThread::started, &context, [&]() {
+
+            ui->pushButtonStart->setEnabled(false);
+            ui->pushButtonStop->setEnabled(false);
+            ui->pushButtonExport->setEnabled(false);
+            ui->progressBar->setVisible(true);
+            emit inProgressSignal(0);
+
+            QStringList exportDatas;
+            QList<QStringList> chartDatas;
+            int32_t dataCount = INT32_MAX;
+            int tabCount = ui->tabWidget->count();
+            for (int i = 0; i < tabCount; i++) {
+                QString name = ui->tabWidget->tabText(i);
+                ChartViewForm *form = static_cast<ChartViewForm *>(ui->tabWidget->widget(i));
+                QStringList datas = form->exportDatas();
+                if (datas.size()) {
+                    chartDatas << datas;
+                    dataCount = std::min(dataCount, datas.size());
+                }
+
+                qint64 progress = (double)(i + 1) / (tabCount + 1) * 100.0;
+                emit inProgressSignal(progress);
+            }
+
+            int chartCount = chartDatas.count();
+            for (int32_t i = 0; i < dataCount; i++) {
+                QString exportData;
+                for (int j = 0; j < chartCount; j++) {
+                    exportData += chartDatas[j][i];
+                }
+                exportDatas << exportData;
+            }
+
+
+            QFile file(filePath);
+
+            if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                QTextStream out(&file);
+                out.setCodec("UTF-8");
+
+                try {
+                    out << exportDatas.join("\n");
+                } catch (std::runtime_error &e) {
+                }
+
+                file.close();
+            }
+
+            ui->pushButtonStart->setEnabled(true);
+            ui->pushButtonStop->setEnabled(false);
+            ui->pushButtonExport->setEnabled(true);
+            emit progressFinighSignal();
+            loop.quit();
+        });
+        thread.start();
+        loop.exec();
+        thread.quit();
+        thread.wait();
+    }
 }
 
 void MainWindow::onTimer() {
@@ -223,7 +300,7 @@ QString MainWindow::stringifyProject() {
     for (int i = 0; i < ui->tabWidget->count(); i++) {
         QString name = ui->tabWidget->tabText(i);
         ChartViewForm *form = static_cast<ChartViewForm *>(ui->tabWidget->widget(i));
-        QStringList datas = form->getDatas();
+        QStringList datas = form->getDataNames();
 
         QJsonObject tab;
         QJsonArray values;
@@ -252,4 +329,12 @@ void MainWindow::on_actionOpen_triggered() {
 
 void MainWindow::on_actionSave_triggered() {
     saveProject();
+}
+
+void MainWindow::inProgress(qint64 value) {
+    ui->progressBar->setValue(value);
+}
+
+void MainWindow::progressFinish() {
+    ui->progressBar->setValue(100);
 }
