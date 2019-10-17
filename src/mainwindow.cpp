@@ -40,7 +40,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::inProgressSignal, this, &MainWindow::inProgress);
     connect(this, &MainWindow::progressFinighSignal, this, &MainWindow::progressFinish);
 
+    tunerForm = new ParameterTunerForm(this);
+    ui->dockWidget->setWidget(tunerForm);
+
     driverInterface.init();
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [ = ]() {
+        RobotData data = driverInterface.getRobotData();
+        tunerForm->update(data);
+    });
+    timer->start(1);
+
+    connect(tunerForm, &ParameterTunerForm::sendJson, &driverInterface, &TcpDriverInterface::sendJson);
 }
 
 MainWindow::~MainWindow() {
@@ -127,7 +138,7 @@ void MainWindow::on_pushButtonExport_clicked() {
                     dataCount = std::min(dataCount, datas.size());
                 }
 
-                qint64 progress = (double)(i + 1) / (tabCount + 1) * 100.0;
+                qint64 progress = (i + 1) * 100 / (tabCount + 1);
                 emit inProgressSignal(progress);
             }
 
@@ -140,18 +151,12 @@ void MainWindow::on_pushButtonExport_clicked() {
                 exportDatas << exportData;
             }
 
-
             QFile file(filePath);
 
             if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
                 QTextStream out(&file);
                 out.setCodec("UTF-8");
-
-                try {
-                    out << exportDatas.join("\n");
-                } catch (std::runtime_error &e) {
-                }
-
+                out << exportDatas.join("\n");
                 file.close();
             }
 
@@ -183,7 +188,7 @@ void MainWindow::onTimer() {
         emit chartUpdate(timeValue, data);
 
         if (!stopSignal) {
-            QTimer::singleShot(1, this, &MainWindow::onTimer);
+            QTimer::singleShot(0, this, &MainWindow::onTimer);
         }
     }
 }
@@ -201,6 +206,7 @@ void MainWindow::createProject() {
     }
 
     clearProject();
+    onPushbuttonCreateClicked();
     this->setWindowTitle("KU-Control-Tuner");
 }
 
@@ -283,10 +289,13 @@ void MainWindow::clearProject() {
 
 void MainWindow::loadProject(QJsonObject &json) {
     QJsonArray tabs = json["tabs"].toArray();
-    int count = tabs.count();
-    if (count) {
-        clearProject();
-        for (int i = 0; i < count; i++) {
+    QJsonArray tuner = json["tuner"].toArray();
+    int tabCount = tabs.count();
+
+    clearProject();
+
+    if (tabCount) {
+        for (int i = 0; i < tabCount; i++) {
             QJsonObject tab = tabs[i].toObject();
             QString name = tab["name"].toString();
             QJsonArray values = tab["values"].toArray();
@@ -305,12 +314,24 @@ void MainWindow::loadProject(QJsonObject &json) {
         }
 
         ui->tabWidget->setCurrentIndex(0);
+    } else {
+        onPushbuttonCreateClicked();
     }
+
+    QStringList dataNames;
+
+    for (auto name : tuner) {
+        dataNames << name.toString();
+    }
+
+    tunerForm->init(dataNames);
 }
 
 QString MainWindow::stringifyProject() {
     QJsonObject json;
     QJsonArray tabs;
+    QJsonArray tuner;
+
     for (int i = 0; i < ui->tabWidget->count(); i++) {
         QString name = ui->tabWidget->tabText(i);
         ChartViewForm *form = static_cast<ChartViewForm *>(ui->tabWidget->widget(i));
@@ -327,8 +348,14 @@ QString MainWindow::stringifyProject() {
 
         tabs.push_back(tab);
     }
-
     json["tabs"] = tabs;
+
+    QStringList dataNames = tunerForm->getDataNames();
+    for (auto name : dataNames) {
+        tuner.push_back(name);
+    }
+    json["tuner"] = tuner;
+
     QJsonDocument doc(json);
     return doc.toJson(QJsonDocument::Indented);
 }

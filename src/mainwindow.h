@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QPushButton>
 
+#include "src/tuner/parameter_tuner_form.h"
 #include "src/driver/tcp_driver_interface.hpp"
 
 
@@ -54,6 +55,7 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    ParameterTunerForm *tunerForm;
     QPushButton *pushButtonTabCreate;
 
     QDir projectSaveDirectory;

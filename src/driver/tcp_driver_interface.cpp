@@ -448,7 +448,7 @@ void TcpDriverInterface::onUpdate() {
     mutex.unlock();
 
     if (!isStop) {
-        QTimer::singleShot(1, this, &TcpDriverInterface::onUpdate);
+        QTimer::singleShot(0, this, &TcpDriverInterface::onUpdate);
     }
 }
 
@@ -509,6 +509,5 @@ void TcpDriverInterface::sendJson(QJsonObject json) {
         QJsonDocument doc(json);
         socket->write(doc.toJson(QJsonDocument::Compact));
         socket->flush();
-        qDebug() << QTime::currentTime() << json;
     }
 }

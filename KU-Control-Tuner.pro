@@ -24,7 +24,8 @@ SOURCES += \
     src/driver/tcp_driver_interface.cpp \
     src/driver/driver.cpp \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/tuner/parameter_tuner_form.cpp
 
 HEADERS += \
     src/chart/chart_select_dialog.h \
@@ -32,12 +33,14 @@ HEADERS += \
     src/define.h \
     src/driver/tcp_driver_interface.hpp \
     src/driver/driver.hpp \
-    src/mainwindow.h
+    src/mainwindow.h \
+    src/tuner/parameter_tuner_form.h
 
 FORMS += \
     ui/chart/chart_select_dialog.ui \
     ui/chart/chart_view_form.ui \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/tuner/parameter_tuner_form.ui
 
 SOURCES += \
         lib/QCustomPlot/qcustomplot.cpp

@@ -5,6 +5,8 @@
 #include <vector>
 #include <stdint.h>
 
+#include <QString>
+
 
 const int ROBOT_DOF = 7;
 
@@ -115,5 +117,7 @@ struct RobotData {
         collisionStatus = false;
     }
 };
+
+const QString REGEX_NUM("\\[([\\d])\\]");
 
 #endif // DEFINE_H

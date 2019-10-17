@@ -152,11 +152,11 @@ void ChartViewForm::update(qreal time, RobotData data) {
         plot->graph(i)->addData(time, value);
     }
 
-    qreal offset = 0.1;
+    qreal offset = 0.25;
     qreal xMax = time;
     qreal xMin = xMax - (100 * timeRange / 1000.0);
     qreal yMax = dataRange.x() * ((dataRange.x() >= 0) ? 1 + offset : 1 - offset);
-    qreal yMin = dataRange.y() * ((dataRange.y() >= 0) ? 1 + offset : 1 - offset);
+    qreal yMin = dataRange.y() * ((dataRange.y() <= 0) ? 1 + offset : 1 - offset);
 
     plot->xAxis->setRange(xMin, xMax);
     plot->yAxis->setRange(yMin, yMax);

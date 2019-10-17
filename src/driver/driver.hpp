@@ -1,5 +1,5 @@
-#ifndef TCP_MENAGER_HPP
-#define TCP_MENAGER_HPP
+#ifndef DRIVER_HPP
+#define DRIVER_HPP
 
 #include <QObject>
 #include <vector>

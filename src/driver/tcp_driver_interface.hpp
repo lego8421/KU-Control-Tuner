@@ -14,6 +14,9 @@ class TcpDriverInterface : public Driver {
 public:
     TcpDriverInterface(QObject *parent = nullptr);
 
+public slots:
+    void sendJson(QJsonObject json);
+
 public:
     void init();
 
@@ -60,7 +63,6 @@ private:
     void waitForPathOperating();
     bool parseJsonFromBuffer(QJsonObject &json);
     std::vector<double> parseVectorFromJson(QJsonArray json);
-    void sendJson(QJsonObject json);
 
 private:
     QTcpSocket *socket;

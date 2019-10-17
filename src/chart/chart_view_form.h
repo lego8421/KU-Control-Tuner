@@ -11,7 +11,6 @@ const QList<QColor> rainbowColors = {QColor("#ff0000"), QColor("#ff8c00"), QColo
 const QList<QColor> rgbColors = {QColor("#ff0000"), QColor("#008000"), QColor("#0000ff")};
 const QList<QColor> rgColors = {QColor("#ff0000"), QColor("#008000")};
 const int timeRange = 100;
-const QString REGEX_NUM("\\[([\\d])\\]");
 
 namespace Ui {
 class ChartViewForm;
