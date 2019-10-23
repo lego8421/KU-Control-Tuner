@@ -92,6 +92,72 @@ void ParameterTunerForm::update(RobotData data) {
                 int index = regex.cap(1).toInt();
                 value = data.measuredForce[index];
             }
+        } else if(name.indexOf("JSPGain_Angle") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointAnglePGain[index];
+            }
+        } else if(name.indexOf("JSIGain_Angle") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointAngleIGain[index];
+            }
+        } else if(name.indexOf("JSPGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointVelocityPGain[index];
+            }
+        } else if(name.indexOf("JSIGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointVelocityIGain[index];
+            }
+        } else if(name.indexOf("CSPGain_Pos") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.posePGain[index];
+            }
+        } else if(name.indexOf("CSIGain_Pos") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.poseIGain[index];
+            }
+        } else if(name.indexOf("CSPGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.velocityPGain[index];
+            }
+        } else if(name.indexOf("CSIGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.velocityIGain[index];
+            }
+        } else if(name.indexOf("ImpedanceM") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceM[index];
+            }
+        } else if(name.indexOf("ImpedanceD") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceD[index];
+            }
+        } else if(name.indexOf("ImpedanceK") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceK[index];
+            }
         }
 
         ui->tableWidget->item(i, 1)->setText(QString::number(value, 'f', 3));
@@ -108,7 +174,7 @@ void ParameterTunerForm::onPushButtonWriteClicked() {
             double value = itemValue->text().toDouble();
 
             QJsonObject json;
-            json["command"] = 123123;
+            json["command"] = COMMAND_PARAMETER_TUNNER;
             json[name] = value;
 
             emit sendJson(json);

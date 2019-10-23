@@ -81,6 +81,8 @@ const int COMMAND_ARCBLENDING_ORIENTATION = 801;
 const int COMMAND_ARCBLENDING_CHECK = 802;
 const int COMMAND_ARCBLENDING_DIFFVEL = 803;
 
+const int COMMAND_PARAMETER_TUNNER = 2000;
+
 // math
 const double RADPERDEG = M_PI / 180.0;
 const double DEGTORAD = M_PI / 180.0;
@@ -102,6 +104,18 @@ struct RobotData {
     bool collisionStatus;
     bool isPathOperating;
 
+    std::vector<double> jointAnglePGain;
+    std::vector<double> jointAngleIGain;
+    std::vector<double> jointVelocityPGain;
+    std::vector<double> jointVelocityIGain;
+    std::vector<double> posePGain;
+    std::vector<double> poseIGain;
+    std::vector<double> velocityPGain;
+    std::vector<double> velocityIGain;
+    std::vector<double> impedanceM;
+    std::vector<double> impedanceD;
+    std::vector<double> impedanceK;
+
     RobotData () {
         measuredJointAngle.resize(ROBOT_DOF);
         measuredJointVelocity.resize(ROBOT_DOF);
@@ -115,6 +129,18 @@ struct RobotData {
         robotStatus = STATUS_DEFAULTS;
         isPathOperating = false;
         collisionStatus = false;
+
+        jointAnglePGain.resize(ROBOT_DOF);
+        jointAngleIGain.resize(ROBOT_DOF);
+        jointVelocityPGain.resize(ROBOT_DOF);
+        jointVelocityIGain.resize(ROBOT_DOF);
+        posePGain.resize(ROBOT_DOF);
+        poseIGain.resize(ROBOT_DOF);
+        velocityPGain.resize(ROBOT_DOF);
+        velocityIGain.resize(ROBOT_DOF);
+        impedanceM.resize(ROBOT_DOF);
+        impedanceD.resize(ROBOT_DOF);
+        impedanceK.resize(ROBOT_DOF);
     }
 };
 

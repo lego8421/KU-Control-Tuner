@@ -145,7 +145,74 @@ void ChartViewForm::update(qreal time, RobotData data) {
                 int index = regex.cap(1).toInt();
                 value = data.measuredForce[index];
             }
+        } else if(name.indexOf("JSPGain_Angle") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointAnglePGain[index];
+            }
+        } else if(name.indexOf("JSIGain_Angle") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointAngleIGain[index];
+            }
+        } else if(name.indexOf("JSPGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointVelocityPGain[index];
+            }
+        } else if(name.indexOf("JSIGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.jointVelocityIGain[index];
+            }
+        } else if(name.indexOf("CSPGain_Pos") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.posePGain[index];
+            }
+        } else if(name.indexOf("CSIGain_Pos") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.poseIGain[index];
+            }
+        } else if(name.indexOf("CSPGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.velocityPGain[index];
+            }
+        } else if(name.indexOf("CSIGain_Vel") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.velocityIGain[index];
+            }
+        } else if(name.indexOf("ImpedanceM") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceM[index];
+            }
+        } else if(name.indexOf("ImpedanceD") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceD[index];
+            }
+        } else if(name.indexOf("ImpedanceK") != -1) {
+            QRegExp regex(REGEX_NUM);
+            if (regex.indexIn(name) != -1) {
+                int index = regex.cap(1).toInt();
+                value = data.impedanceK[index];
+            }
         }
+
         dataRange.setX(std::max(dataRange.x(), value));
         dataRange.setY(std::min(dataRange.y(), value));
 

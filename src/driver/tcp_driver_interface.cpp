@@ -444,6 +444,40 @@ void TcpDriverInterface::onUpdate() {
         if (receivedJson.keys().indexOf("isPathOperating") != -1) {
             robotData.isPathOperating = receivedJson["isPathOperating"].toBool(false);
         }
+
+        if (receivedJson.keys().indexOf("jointAnglePGain") != -1) {
+            robotData.jointAnglePGain = parseVectorFromJson(receivedJson["jointAnglePGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("jointAngleIGain") != -1) {
+            robotData.jointAngleIGain = parseVectorFromJson(receivedJson["jointAngleIGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("jointVelocityPGain") != -1) {
+            robotData.jointAngleIGain = parseVectorFromJson(receivedJson["jointVelocityPGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("jointVelocityIGain") != -1) {
+            robotData.jointAngleIGain = parseVectorFromJson(receivedJson["jointVelocityIGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("posePGain") != -1) {
+            robotData.posePGain = parseVectorFromJson(receivedJson["posePGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("poseIGain") != -1) {
+            robotData.poseIGain = parseVectorFromJson(receivedJson["poseIGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("velocityPGain") != -1) {
+            robotData.velocityPGain = parseVectorFromJson(receivedJson["velocityPGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("velocityIGain") != -1) {
+            robotData.velocityIGain = parseVectorFromJson(receivedJson["velocityIGain"].toArray());
+        }
+        if (receivedJson.keys().indexOf("impedanceM") != -1) {
+            robotData.impedanceM = parseVectorFromJson(receivedJson["impedanceM"].toArray());
+        }
+        if (receivedJson.keys().indexOf("impedanceD") != -1) {
+            robotData.impedanceD = parseVectorFromJson(receivedJson["impedanceD"].toArray());
+        }
+        if (receivedJson.keys().indexOf("impedanceK") != -1) {
+            robotData.impedanceK = parseVectorFromJson(receivedJson["impedanceK"].toArray());
+        }
     }
     mutex.unlock();
 
@@ -509,5 +543,6 @@ void TcpDriverInterface::sendJson(QJsonObject json) {
         QJsonDocument doc(json);
         socket->write(doc.toJson(QJsonDocument::Compact));
         socket->flush();
+        qDebug() << json;
     }
 }

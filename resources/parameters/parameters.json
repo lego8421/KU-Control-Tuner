@@ -1,60 +1,115 @@
 {
     "parameters":[
-       {
+        {
            "name" : "ControlCommand",
            "type" : "int"
-       },
-       {
+        },
+        {
            "name" : "ControlStatus",
            "type" : "int"
-       },
-       {
+        },
+        {
            "name" : "OperationState",
            "type" : "bool"
-       },
-       {
+        },
+        {
            "name" : "CollisionStatus",
            "type" : "bool"
-       },
-       {
+        },
+        {
            "name" : "JSMeasAngle",
            "type" : "array",
            "array num" : 7
-       },
-       {
+        },
+        {
            "name" : "JSMeasVel",
            "type" : "array",
            "array num" : 7
-       },
-       {
+        },
+        {
            "name" : "JSDesAngle",
            "type" : "array",
            "array num" : 7
-       },
-       {
+        },
+        {
            "name" : "JSMeasTorqueJTS",
            "type" : "array",
            "array num" : 7
-       },
-       {
+        },
+        {
            "name" : "CSMeasPos",
            "type" : "array",
            "array num" : 6
-       },
-       {
+        },
+        {
            "name" : "CSMeasVel",
            "type" : "array",
            "array num" : 6
-       },
-       {
+        },
+        {
            "name" : "CSDesPos",
            "type" : "array",
            "array num" : 6
-       },
-       {
+        },
+        {
            "name" : "MeasForceLPF2",
            "type" : "array",
            "array num" : 6
-       }
+        },
+        {
+            "name" : "JSPGain_Angle",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "JSIGain_Angle",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "JSPGain_Vel",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "JSIGain_Vel",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "CSPGain_Pos",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "CSIGain_Pos",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "CSPGain_Vel",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "CSIGain_Vel",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "ImpedanceM",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "ImpedanceD",
+            "type" : "array",
+            "array num" : 6
+        },
+        {
+            "name" : "ImpedanceK",
+            "type" : "array",
+            "array num" : 6
+        }
     ]
  }
